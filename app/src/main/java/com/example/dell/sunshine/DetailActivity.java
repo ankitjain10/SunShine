@@ -1,12 +1,17 @@
 package com.example.dell.sunshine;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 
 public class DetailActivity extends ActionBarActivity {
+    String messagefromMainActivity;
+    String TAG = DetailActivity.class.getSimpleName();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,7 +35,18 @@ public class DetailActivity extends ActionBarActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_share) {
+            Intent intent = this.getIntent();
+
+            if (intent != null && intent.hasExtra("itemClickedMessage")) {
+                messagefromMainActivity = (intent.getStringExtra("itemClickedMessage"));
+            }
+            Log.v(TAG, messagefromMainActivity);
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+            shareIntent.setType("text/plain");
+            shareIntent.putExtra("messagefromMainActivity", messagefromMainActivity);
+            startActivity(Intent.createChooser(shareIntent, "Share through"));
             return true;
         }
 

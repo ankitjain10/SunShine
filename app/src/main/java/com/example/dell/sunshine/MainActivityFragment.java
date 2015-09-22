@@ -2,9 +2,11 @@ package com.example.dell.sunshine;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.format.Time;
 import android.util.Log;
@@ -45,12 +47,24 @@ public class MainActivityFragment extends Fragment {
     public MainActivityFragment() {
     }
 
+    private void updateWeather() {
+        FetchWeatherTask weatherTask = new FetchWeatherTask();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String location = prefs.getString(getString(R.string.pref_location_key),
+                getString(R.string.pref_location_default));
+        weatherTask.execute(location);
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
-        fetchWeatherTask.execute("Muktsar");
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateWeather();
     }
 
     @Override
@@ -76,7 +90,7 @@ public class MainActivityFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_main, menu);
+        inflater.inflate(R.menu.menu_settings, menu);
     }
 
     @Override
@@ -89,9 +103,7 @@ public class MainActivityFragment extends Fragment {
             return true;
         }
         if (id == R.id.action_refresh) {
-            FetchWeatherTask fetchWeatherTask = new FetchWeatherTask();
-            fetchWeatherTask.execute("Delhi");
-
+            updateWeather();
             return true;
         }
 
@@ -211,6 +223,18 @@ public class MainActivityFragment extends Fragment {
         }
 
         private String formatHighLows(double high, double low) {
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String unitType = prefs.getString(getString(R.string.pref_units_key),
+                    getString(R.string.pref_temp_default));
+
+            if (unitType.equals(getString(R.string.pref_units_label_imperial))) {
+                high = (high * 1.8) + 32;
+                low = (low * 1.8) + 32;
+            } else if (!unitType.equals(getString(R.string.pref_units_label_imperial))) {
+
+                Log.d(TAG, "unit Type " + unitType);
+
+            }
 
             long roundedHigh = Math.round(high);
             long roundedLow = Math.round(low);

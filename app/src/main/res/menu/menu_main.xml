@@ -1,15 +1,10 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".MainActivityFragment">
+    tools:context="com.example.dell.sunshine.MainActivityFragment">
     <item
-        android:id="@+id/action_settings"
-        android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
-    <item
-    android:id="@+id/action_refresh"
+        android:id="@+id/action_map"
     android:orderInCategory="101"
-    android:title="@string/action_refresh"
+        android:title="@string/action_Map"
     app:showAsAction="never" />
 </menu>
